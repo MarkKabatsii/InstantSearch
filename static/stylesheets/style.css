@@ -89,7 +89,7 @@ p {
 .main-title {
     margin: 0 auto;
     animation-name: textOpacity;
-    animation-duration: 4s;
+    animation-duration: 3s;
 }
 
 .title {
