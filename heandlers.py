@@ -1,10 +1,14 @@
 import webapp2
+import jinja2
+import os
 from google.appengine.ext import db
 
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__) + '/templates')
+)
 
 STACKUNDO = []
 STACKREDO = []
-HTML = """<html><body>%s</body></html>"""
 
 
 class DataSet(db.Model):
@@ -14,7 +18,11 @@ class DataSet(db.Model):
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.write('<h1>Hello world!</h1>')
+        template_vars = {
+            'dates': ['Hello world!']
+        }
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(template_vars))
 
 
 class SetHandler(webapp2.RequestHandler):
@@ -35,9 +43,15 @@ class SetHandler(webapp2.RequestHandler):
         )
         comment.put()
         if variable is not None and variable.name == variable_name:
-            self.response.write('<p></p>')
+            template = jinja_environment.get_template('index.html')
+            self.response.out.write(template.render())
         else:
-            self.response.write('<p>%s=%s</p>' % (variable_name, variable_value))
+            var_data = [variable_name, '=', variable_value]
+            var_text = {
+                'dates': var_data,
+            }
+            template = jinja_environment.get_template('index.html')
+            self.response.out.write(template.render(var_text))
 
 
 class GetHandler(webapp2.RequestHandler):
@@ -45,7 +59,11 @@ class GetHandler(webapp2.RequestHandler):
         variable_name = self.request.get('name')
         key = db.Key.from_path('DataSet', variable_name)
         variable = db.get(key)
-        self.response.write('<p>%s</p>' % variable.value)
+        var_text = {
+            'dates': [variable.value]
+        }
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(var_text))
 
 
 class UnsetHandler(webapp2.RequestHandler):
@@ -60,25 +78,41 @@ class UnsetHandler(webapp2.RequestHandler):
         STACKUNDO.append((variable_name, "None"))
         key = db.Key.from_path('DataSet', variable_name)
         variable = db.get(key)
-        self.response.write('<p>%s=%s</p>' % (variable_name, variable.value))
+        var_data = [variable_name, '=', variable.value]
+        var_text = {
+            'dates': var_data,
+        }
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(var_text))
 
 
 class NumEqualToHandler(webapp2.RequestHandler):
     def get(self):
         query = DataSet.all().filter('value =', self.request.get('value'))
         count = 0
+
         for self.num in query:
             count += 1
         if count != 0:
-            self.response.write('<p>%s</p>' % count)
+            var_text = {
+                'dates': [count],
+            }
         else:
-            self.response.write('<p>%s</p>' % count)
+            var_text = {
+                'dates': [count],
+            }
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(var_text))
 
 
 class UndoHandler(webapp2.RequestHandler):
     def get(self):
         if not STACKUNDO:
-            self.response.write('<p>NO COMMANDS</p>')
+            var_text = {
+                'dates': ['NO COMMANDS'],
+            }
+            template = jinja_environment.get_template('index.html')
+            self.response.out.write(template.render(var_text))
         if STACKUNDO:
             key, value = STACKUNDO.pop()
             STACKREDO.append((key, value))
@@ -88,13 +122,22 @@ class UndoHandler(webapp2.RequestHandler):
                 key_name=key,
             )
             comment.put()
-            self.response.write('<p>%s=%s</p>' % (key, value))
+            var_data = [key, '=', value]
+            var_text = {
+                'dates': var_data,
+            }
+            template = jinja_environment.get_template('index.html')
+            self.response.out.write(template.render(var_text))
 
 
 class RedoHandler(webapp2.RequestHandler):
     def get(self):
         if not STACKREDO:
-            self.response.write('<p>NO CAMMANDS</p>')
+            var_text = {
+                'dates': ['NO COMMANDS'],
+            }
+            template = jinja_environment.get_template('index.html')
+            self.response.out.write(template.render(var_text))
         if STACKREDO:
             key, value = STACKREDO.pop()
             comment = DataSet(
@@ -103,7 +146,12 @@ class RedoHandler(webapp2.RequestHandler):
                 key_name=key,
             )
             comment.put()
-            self.response.write('<p>%s=%s</p>' % (key, value))
+            var_data = [key, '=', value]
+            var_text = {
+                'dates': var_data,
+            }
+            template = jinja_environment.get_template('index.html')
+            self.response.out.write(template.render(var_text))
 
 
 class EndHandler(webapp2.RequestHandler):
@@ -112,5 +160,8 @@ class EndHandler(webapp2.RequestHandler):
         entries = query.fetch(1000)
         db.delete(entries)
         STACKUNDO[:] = []
-        self.response.write('<p>CLEANED</p>')
-
+        var_text = {
+            'dates': ['CLEANED']
+        }
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(var_text))
