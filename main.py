@@ -19,5 +19,5 @@ application = webapp2.WSGIApplication([
     ('/numequalto', NumEqualToHandler),
     ('/undo', UndoHandler),
     ('/redo', RedoHandler),
-    ('/end', EndHandler)
+    ('/end', EndHandler),
 ], debug=False)

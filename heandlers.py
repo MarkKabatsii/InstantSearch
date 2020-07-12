@@ -43,15 +43,9 @@ class SetHandler(webapp2.RequestHandler):
         )
         comment.put()
         if variable is not None and variable.name == variable_name:
-            template = jinja_environment.get_template('index.html')
-            self.response.out.write(template.render())
+            self.response.write('')
         else:
-            var_data = [variable_name, '=', variable_value]
-            var_text = {
-                'dates': var_data,
-            }
-            template = jinja_environment.get_template('index.html')
-            self.response.out.write(template.render(var_text))
+            self.response.write(variable_name + '=' + variable_value)
 
 
 class GetHandler(webapp2.RequestHandler):
@@ -59,11 +53,11 @@ class GetHandler(webapp2.RequestHandler):
         variable_name = self.request.get('name')
         key = db.Key.from_path('DataSet', variable_name)
         variable = db.get(key)
-        var_text = {
+        template_vars = {
             'dates': [variable.value]
         }
         template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(var_text))
+        self.response.out.write(template.render(template_vars))
 
 
 class UnsetHandler(webapp2.RequestHandler):
@@ -78,12 +72,7 @@ class UnsetHandler(webapp2.RequestHandler):
         STACKUNDO.append((variable_name, "None"))
         key = db.Key.from_path('DataSet', variable_name)
         variable = db.get(key)
-        var_data = [variable_name, '=', variable.value]
-        var_text = {
-            'dates': var_data,
-        }
-        template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(var_text))
+        self.response.write(variable_name + "=" + variable.value)
 
 
 class NumEqualToHandler(webapp2.RequestHandler):
@@ -94,25 +83,21 @@ class NumEqualToHandler(webapp2.RequestHandler):
         for self.num in query:
             count += 1
         if count != 0:
-            var_text = {
-                'dates': [count],
+            template_vars = {
+                'dates': [count]
             }
         else:
-            var_text = {
-                'dates': [count],
+            template_vars = {
+                'dates': [count]
             }
         template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(var_text))
+        self.response.out.write(template.render(template_vars))
 
 
 class UndoHandler(webapp2.RequestHandler):
     def get(self):
         if not STACKUNDO:
-            var_text = {
-                'dates': ['NO COMMANDS'],
-            }
-            template = jinja_environment.get_template('index.html')
-            self.response.out.write(template.render(var_text))
+            self.response.write('NO COMMANDS')
         if STACKUNDO:
             key, value = STACKUNDO.pop()
             STACKREDO.append((key, value))
@@ -122,12 +107,7 @@ class UndoHandler(webapp2.RequestHandler):
                 key_name=key,
             )
             comment.put()
-            var_data = [key, '=', value]
-            var_text = {
-                'dates': var_data,
-            }
-            template = jinja_environment.get_template('index.html')
-            self.response.out.write(template.render(var_text))
+            self.response.write(key + '=' + value)
 
 
 class RedoHandler(webapp2.RequestHandler):
@@ -161,7 +141,7 @@ class EndHandler(webapp2.RequestHandler):
         db.delete(entries)
         STACKUNDO[:] = []
         var_text = {
-            'dates': ['CLEANED']
+            'dates': 'CLEANED'
         }
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(var_text))

@@ -8,7 +8,6 @@ body {
     box-sizing: border-box;
     font-family: 'Lato', sans-serif;
     color: #000;
-    z-index: 9999999;
     height: 100vh;
 }
 
@@ -40,12 +39,14 @@ p {
     width: 100%;
     background: #fff;
     padding: 5px 0;
-    -webkit-box-shadow: 0px 8px 5px 0px rgba(0,0,0,0.19);
-    -moz-box-shadow: 0px 8px 5px 0px rgba(0,0,0,0.19);
-    box-shadow: 0px 8px 5px 0px rgba(0,0,0,0.19);
+    -webkit-box-shadow: 0px 8px 5px 0px rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0px 8px 5px 0px rgba(0, 0, 0, 0.19);
+    box-shadow: 0px 8px 5px 0px rgba(0, 0, 0, 0.19);
+    z-index: 100;
 }
 
-.logo {}
+.logo {
+}
 
 .logo img {
     width: 250px;
@@ -57,7 +58,8 @@ p {
     padding: 0;
 }
 
-.nav_item {}
+.nav_item {
+}
 
 .nav_link {
     text-transform: uppercase;
@@ -80,7 +82,7 @@ p {
     top: 0;
     left: 0;
     background: #e2e2e2;
-    z-index: -1;
+    /*z-index: ;*/
     height: 100vh;
     display: flex;
     align-items: center;
@@ -90,6 +92,7 @@ p {
     margin: 0 auto;
     animation-name: textOpacity;
     animation-duration: 3s;
+    z-index: 9999999999999;
 }
 
 .title {
@@ -104,9 +107,9 @@ p {
     left: 0;
     background: #fff;
     padding: 20px 0;
-    -webkit-box-shadow: 8px 0px 5px 0px rgba(0,0,0,0.19);
-    -moz-box-shadow: 8px 0px 5px 0px rgba(0,0,0,0.19);
-    box-shadow: 8px 0px 5px 0px rgba(0,0,0,0.19);
+    -webkit-box-shadow: 8px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 8px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    box-shadow: 8px 0px 5px 0px rgba(0, 0, 0, 0.19);
     width: 100%;
 }
 
@@ -136,6 +139,42 @@ a i {
 }
 
 @keyframes textOpacity {
-  0%   {opacity: 0;}
-  100% {opacity: 1;}
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
+
+/*FORM*/
+.group-form {
+    margin: 2rem 0;
+}
+
+.form-input {
+    padding: 40px 20px;
+    box-shadow: 0px 56px 104px -3px rgba(0, 0, 0, 0.5);
+}
+
+
+/*MEDIA Query*/
+/* Extra small devices (phones, 600px and down) */
+/*@media only screen and (min-width: 576px) {*/
+/*}*/
+
+/*!* Small devices (portrait tablets and large phones, 600px and up) *!*/
+/*@media only screen and (max-width: 600px) {*/
+/*}*/
+
+/*!* Medium devices (landscape tablets, 768px and up) *!*/
+/*@media only screen and (max-width: 768px) {*/
+/*}*/
+
+/*!* Large devices (laptops/desktops, 992px and up) *!*/
+/*@media only screen and (max-width: 992px) {*/
+/*}*/
+
+/*!* Extra large devices (large laptops and desktops, 1200px and up) *!*/
+/*@media only screen and (max-width: 1200px) {*/
+/*}*/
