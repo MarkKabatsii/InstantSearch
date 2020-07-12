@@ -53,11 +53,7 @@ class GetHandler(webapp2.RequestHandler):
         variable_name = self.request.get('name')
         key = db.Key.from_path('DataSet', variable_name)
         variable = db.get(key)
-        template_vars = {
-            'dates': [variable.value]
-        }
-        template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(template_vars))
+        self.response.write(variable.value)
 
 
 class UnsetHandler(webapp2.RequestHandler):
@@ -79,19 +75,12 @@ class NumEqualToHandler(webapp2.RequestHandler):
     def get(self):
         query = DataSet.all().filter('value =', self.request.get('value'))
         count = 0
-
         for self.num in query:
             count += 1
         if count != 0:
-            template_vars = {
-                'dates': [count]
-            }
+            self.response.write(count)
         else:
-            template_vars = {
-                'dates': [count]
-            }
-        template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(template_vars))
+            self.response.write(count)
 
 
 class UndoHandler(webapp2.RequestHandler):
@@ -131,8 +120,4 @@ class EndHandler(webapp2.RequestHandler):
         entries = query.fetch(1000)
         db.delete(entries)
         STACKUNDO[:] = []
-        var_text = {
-            'dates': 'CLEANED'
-        }
-        template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(var_text))
+        self.response.write('CLEANED')
