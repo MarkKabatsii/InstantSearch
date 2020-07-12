@@ -113,11 +113,7 @@ class UndoHandler(webapp2.RequestHandler):
 class RedoHandler(webapp2.RequestHandler):
     def get(self):
         if not STACKREDO:
-            var_text = {
-                'dates': ['NO COMMANDS'],
-            }
-            template = jinja_environment.get_template('index.html')
-            self.response.out.write(template.render(var_text))
+            self.response.write('NO COMMANDS')
         if STACKREDO:
             key, value = STACKREDO.pop()
             comment = DataSet(
@@ -126,12 +122,7 @@ class RedoHandler(webapp2.RequestHandler):
                 key_name=key,
             )
             comment.put()
-            var_data = [key, '=', value]
-            var_text = {
-                'dates': var_data,
-            }
-            template = jinja_environment.get_template('index.html')
-            self.response.out.write(template.render(var_text))
+            self.response.write(key + '=' + value)
 
 
 class EndHandler(webapp2.RequestHandler):
